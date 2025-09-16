@@ -71,16 +71,17 @@ switch ($action) {
         break;
 
     case 'remove_from_cart':
-        $index = $_POST['index'] ?? null;
-        if ($index !== null && isset($_SESSION['carrinho']->getProdutos()[$index])) {
-            $produtoRemovido = $_SESSION['carrinho']->removerProduto((int)$index);
-            if ($produtoRemovido && isset($produtosDisponiveis[$produtoRemovido->getId()])) {
-                // Incrementa o estoque do produto removido
-                $produtosDisponiveis[$produtoRemovido->getId()]->incrementarEstoque();
+        $productId = $_POST['id'] ?? null;
+        if ($productId !== null && isset($produtosDisponiveis[$productId])) {
+            $removido = $_SESSION['carrinho']->removerProdutoPorId((int)$productId);
+            if ($removido) {
+                $produtosDisponiveis[$productId]->incrementarEstoque();
+                echo json_encode(['success' => true, 'message' => 'Produto removido!']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Produto não estava no carrinho.']);
             }
-            echo json_encode(['success' => true, 'message' => 'Produto removido!']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Índice inválido.']);
+            echo json_encode(['success' => false, 'message' => 'Produto inválido.']);
         }
         break;
 

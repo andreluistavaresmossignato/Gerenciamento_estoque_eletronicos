@@ -3,49 +3,67 @@
 require_once 'Produto.php';
 
 class Carrinho implements JsonSerializable {
-    private array $produtos = [];
+    private array $itens = []; // [id => ['produto' => Produto, 'quantidade' => int]]
 
     public function adicionarProduto(Produto $produto): void {
-        // Decrementa o estoque do produto ao adicioná-lo ao carrinho
-        if ($produto->getEstoque() > 0) {
-            $this->produtos[] = $produto;
-            // Aqui precisamos decrementar o estoque no objeto original
-            // Vamos fazer isso no controlador (index.php) após adicionar
+        $id = $produto->getId();
+        if (isset($this->itens[$id])) {
+            $this->itens[$id]['quantidade']++;
+        } else {
+            $this->itens[$id] = [
+                'produto' => $produto,
+                'quantidade' => 1
+            ];
         }
     }
 
+    public function getItens(): array {
+        return $this->itens;
+    }
+
     public function getProdutos(): array {
-        return $this->produtos;
+        $produtos = [];
+        foreach ($this->itens as $item) {
+            for ($i = 0; $i < $item['quantidade']; $i++) {
+                $produtos[] = $item['produto'];
+            }
+        }
+        return $produtos;
     }
 
     public function getTotal(): float {
         $total = 0.0;
-        foreach ($this->produtos as $produto) {
-            $total += $produto->getPreco();
-           
-
+        foreach ($this->itens as $item) {
+            $total += $item['produto']->getPreco() * $item['quantidade'];
         }
         return $total;
     }
 
-    /**
-     * Especifica quais dados devem ser serializados para JSON.
-     * Note que os objetos Produto dentro do array $this->produtos
-     * também serão serializados usando seus próprios métodos jsonSerialize().
-     */
-    public function jsonSerialize(): array {
-        return [
-            'produtos' => $this->getProdutos(),
-            'total' => $this->getTotal()
-        ];
+    public function removerProdutoPorId(int $id): bool {
+        if (isset($this->itens[$id])) {
+            if ($this->itens[$id]['quantidade'] > 1) {
+                $this->itens[$id]['quantidade']--;
+            } else {
+                unset($this->itens[$id]);
+            }
+            return true;
+        }
+        return false;
     }
 
-    public function removerProduto(int $index): ?Produto {
-        if (isset($this->produtos[$index])) {
-            $produto = $this->produtos[$index];
-            array_splice($this->produtos, $index, 1);
-            return $produto;
+    public function jsonSerialize(): array {
+        $itensParaJson = [];
+        foreach ($this->itens as $id => $item) {
+            $itensParaJson[] = [
+                'id' => $id,
+                'produto' => $item['produto'],
+                'quantidade' => $item['quantidade']
+            ];
         }
-        return null;
+
+        return [
+            'itens' => $itensParaJson,
+            'total' => $this->getTotal()
+        ];
     }
 }

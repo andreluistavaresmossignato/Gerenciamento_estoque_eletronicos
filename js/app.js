@@ -32,36 +32,59 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Função para buscar o estado atual do carrinho
-    async function carregarCarrinho() {
-        const response = await fetch('api/?action=get_cart');
-        const carrinho = await response.json();
+// Função para buscar o estado atual do carrinho
+async function carregarCarrinho() {
+    const response = await fetch('api/?action=get_cart');
+    const carrinho = await response.json();
 
-        itensCarrinhoEl.innerHTML = ''; // Limpa o carrinho atual
-        if (carrinho.produtos.length === 0) {
-            itensCarrinhoEl.innerHTML = '<p>Seu carrinho está vazio.</p>';
-        } else {
-            carrinho.produtos.forEach((item, index) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'mb-2');
-                
-                const itemP = document.createElement('p');
-                itemP.classList.add('mb-0');
-                itemP.textContent = `${item.nome} - R$ ${item.preco.toFixed(2)}`;
-                
-                const removerBtn = document.createElement('button');
-                removerBtn.classList.add('btn', 'btn-sm', 'btn-outline-danger');
-                removerBtn.textContent = 'Remover';
-                removerBtn.setAttribute('data-index', index);
-                
-                itemDiv.appendChild(itemP);
-                itemDiv.appendChild(removerBtn);
-                itensCarrinhoEl.appendChild(itemDiv);
-            });
-        }
-        
-        totalCarrinhoEl.textContent = `R$ ${carrinho.total.toFixed(2)}`;
+    console.log('Dados recebidos do carrinho:', carrinho); // ← DEBUG!
+
+    itensCarrinhoEl.innerHTML = '';
+
+    // Detecta se está usando a estrutura nova (itens) ou antiga (produtos)
+    let itens = carrinho.itens || []; // Nova estrutura
+    if (carrinho.produtos && !itens.length) {
+        // Se não tem 'itens', tenta converter 'produtos' em 'itens' (compatibilidade)
+        const mapa = {};
+        carrinho.produtos.forEach(produto => {
+            if (!mapa[produto.id]) {
+                mapa[produto.id] = {
+                    produto: produto,
+                    quantidade: 0
+                };
+            }
+            mapa[produto.id].quantidade++;
+        });
+        itens = Object.values(mapa);
     }
+
+    if (itens.length === 0) {
+        itensCarrinhoEl.innerHTML = '<p>Seu carrinho está vazio.</p>';
+    } else {
+        itens.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'mb-2');
+            
+            const itemP = document.createElement('p');
+            itemP.classList.add('mb-0');
+            itemP.textContent = `${item.produto.nome} - R$ ${item.produto.preco.toFixed(2)}`;
+            if (item.quantidade > 1) {
+                itemP.textContent += ` x${item.quantidade}`;
+            }
+            
+            const removerBtn = document.createElement('button');
+            removerBtn.classList.add('btn', 'btn-sm', 'btn-outline-danger');
+            removerBtn.textContent = 'Remover 1';
+            removerBtn.setAttribute('data-id', item.produto.id);
+            
+            itemDiv.appendChild(itemP);
+            itemDiv.appendChild(removerBtn);
+            itensCarrinhoEl.appendChild(itemDiv);
+        });
+    }
+    
+    totalCarrinhoEl.textContent = `R$ ${carrinho.total?.toFixed(2) || '0,00'}`;
+}
 
 async function adicionarAoCarrinho(produtoId) {
     const params = new URLSearchParams();
@@ -88,9 +111,9 @@ async function adicionarAoCarrinho(produtoId) {
     carregarProdutos();   
 }
 
-async function removerDoCarrinho(index) {
+async function removerDoCarrinho(produtoId) {
     const params = new URLSearchParams();
-    params.append('index', index);
+    params.append('id', produtoId);
     const response = await fetch('api/?action=remove_from_cart', {
         method: 'POST',
         body: params
@@ -98,14 +121,14 @@ async function removerDoCarrinho(index) {
     const text = await response.text();
     console.log('Resposta do servidor ao remover:', text);
     carregarCarrinho();
-    carregarProdutos(); // ← ESSENCIAL: atualiza estoque e botões
+    carregarProdutos();
 }
 
 // Ouvinte para remover itens do carrinho
 itensCarrinhoEl.addEventListener('click', (evento) => {
-    if (evento.target.matches('button[data-index]')) {
-        const index = evento.target.getAttribute('data-index');
-        removerDoCarrinho(index);
+    if (evento.target.matches('button[data-id]')) {
+        const id = evento.target.getAttribute('data-id');
+        removerDoCarrinho(id);
     }
 });
     
