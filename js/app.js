@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="btn ${produto.estoque > 0 ? 'btn-primary' : 'btn-secondary'}" 
                     data-id="${produto.id}" 
                     ${produto.estoque === 0 ? 'disabled' : ''}>
-                Adicionar ao Carrinho
+                    ${produto.estoque !== 0 ? "Adicionar ao Carrinho" : "Produto esgotado"}
             </button>
             <br>
         `;
