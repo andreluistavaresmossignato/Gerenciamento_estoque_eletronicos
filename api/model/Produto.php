@@ -4,13 +4,15 @@
 class Produto implements JsonSerializable {
     private int $id;
     private string $nome;
+    private string $marca;
     private float $preco;
     private string $caminho;
     private int $estoque;
 
-    public function __construct(int $id, string $nome, float $preco, string $caminho, int $estoque) {
+    public function __construct(int $id, string $nome, string $marca, float $preco, string $caminho, int $estoque) {
         $this->id = $id;
         $this->nome = $nome;
+        $this->marca = $marca;
         $this->preco = $preco;
         $this->caminho = $caminho;
         $this->estoque = $estoque;
@@ -22,6 +24,10 @@ class Produto implements JsonSerializable {
 
     public function getNome(): string {
         return $this->nome;
+    }
+
+    public function getMarca(): string {
+        return $this->marca;
     }
 
     public function getPreco(): float {
@@ -46,8 +52,8 @@ class Produto implements JsonSerializable {
             'nome' => $this->nome,
             'preco' => $this->preco,
             'caminho' => $this->caminho,
-            'estoque' => $this->estoque
-           
+            'estoque' => $this->estoque,
+            'marca'=> $this->marca
         ];
     }
 
