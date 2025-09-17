@@ -1,3 +1,0 @@
-1- Buscar imagens de produtos eletrônicos, definir preço e nome do produto
-2- Adicionar funcionalidades pedidas pelo Maromo no cenário 3
-3- Adicionar design inicial
