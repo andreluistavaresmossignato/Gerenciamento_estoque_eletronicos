@@ -12,19 +12,31 @@ session_start();
 // Define que a resposta será sempre em formato JSON.
 header('Content-Type: application/json');
 
+// Força recarregar produtos se ?reset=1 estiver na URL
+if (isset($_GET['reset']) && $_GET['reset'] == 1) {
+    unset($_SESSION['produtos']);
+    session_destroy();
+    session_start(); // reinicia sessão
+}
 
 // --- Simulação do nosso banco de dados de produtos ---
 // --- Simulação do nosso banco de dados de produtos (persistente na sessão) ---
 if (!isset($_SESSION['produtos'])) {
     $_SESSION['produtos'] = [
-        11 => new Produto(11, "Mouse Logitech", 89.99,"./api/images/produto11.png",500),
-        22 => new Produto(22, "Teclado Microsoft", 104.88, "./api/images/produto22.png",0),
-        33 => new Produto(33, "Monitor LG", 899.90, "./api/images/produto33.png",4),
-        44 => new Produto(44, "Headset Razer", 299.99, "./api/images/produto44.png",4),
-        55 => new Produto(55, "Webcam Intelbras", 199.99, "./api/images/produto55.png",4),
-        66 => new Produto(66, "Cadeira Gamer", 1299.90, "./api/images/produto66.png",4),
-        77 => new Produto(77, "Mesa Gamer", 499.90, "./api/images/produto77.png",4),
-        88 => new Produto(88, "Notebook Lenovo", 2499.90, "./api/images/produto88.png",4)
+        1 => new Produto(1, "Mouse Logitech", 89.99, "./api/images/produto01.png", 5),
+        2 => new Produto(2, "Teclado Microsoft", 104.88, "./api/images/produto02.png", 0),
+        3 => new Produto(3, "Monitor LG", 899.90, "./api/images/produto03.png", 4),
+        4 => new Produto(4, "Headset Razer", 299.99, "./api/images/produto04.png", 4),
+        5 => new Produto(5, "Webcam Intelbras", 199.99, "./api/images/produto05.png", 4),
+        6 => new Produto(6, "Notebook Lenovo", 2499.90, "./api/images/produto06.png", 4),
+        7 => new Produto(7, "Headset Havit", 194.90, "./api/images/produto07.png", 4),
+        8 => new Produto(8, "Mouse Redragon", 299.90, "./api/images/produto08.png", 4),
+        9 => new Produto(9, "Playstation 4", 1249.90, "./api/images/produto09.png", 3),
+        10 => new Produto(10, "Monitor Samsung Odyssey", 2000.90, "./api/images/produto10.png", 7),
+        11 => new Produto(11, "Gabinete Pichau", 419.90, "./api/images/produto11.png", 4),
+        12 => new Produto(12, "WebCam Logitech", 619.99, "./api/images/produto12.png", 4),
+        13 => new Produto(13, "Notebook Acer Nitro", 4319.90, "./api/images/produto13.png", 3),
+        14 => new Produto(14, "Microfone Fifine", 289.99, "./api/images/produto14.png", 7),
     ];
 }
 $produtosDisponiveis = &$_SESSION['produtos']; // Referência, para alterar o original
