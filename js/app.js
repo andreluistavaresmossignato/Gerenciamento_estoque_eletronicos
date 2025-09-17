@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
             produtoDiv.classList.add('produto');
             produtoDiv.innerHTML = `
             <h4>${produto.nome}</h4>
-            <p>Preço: R$ ${produto.preco.toFixed(2)}</p>
             <p id="marca">${produto.marca}</p>
+            <p>Preço: R$ ${produto.preco.toFixed(2)}</p>
             <p>Estoque: <span class="${produto.estoque === 0 ? 'text-danger fw-bold' : ''}">${produto.estoque}</span></p>
             <img class="imagem-produto" src="${produto.caminho}" alt="${produto.nome}">
             <br>
