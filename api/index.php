@@ -37,6 +37,8 @@ if (!isset($_SESSION['produtos'])) {
         12 => new Produto(12, "WebCam Logitech", "Logitech",619.99, "./api/images/produto12.png", 4),
         13 => new Produto(13, "Notebook Acer Nitro", "Acer",4319.90, "./api/images/produto13.png", 3),
         14 => new Produto(14, "Microfone Fifine", "Fifine",289.99, "./api/images/produto14.png", 7),
+        15 => new Produto(15, "Celular Samgung A16 5G", "Samsung",1599.00, "./api/images/produto15.png", 10),
+        16 => new Produto(16, "Controle Xbox Series S Branco", "Microsoft",461.00, "./api/images/produto16.png", 2),
     ];
 }
 $produtosDisponiveis = &$_SESSION['produtos']; // Referência, para alterar o original
