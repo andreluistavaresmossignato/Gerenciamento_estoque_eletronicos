@@ -202,6 +202,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (listaProdutosEl) carregarProdutosFiltrados();
     }
 
+    // --- ESVAZIAR CARRINHO ---
+    async function esvaziarCarrinho() {
+        try {
+            const response = await fetch('api/?action=empty_cart', {
+                method: 'POST'
+            });
+
+            const result = await response.json();
+            console.log(result.message);
+
+            // Atualiza interface
+            if (itensCarrinhoEl) carregarCarrinho();
+            if (listaProdutosEl) carregarProdutosFiltrados();
+
+        } catch (error) {
+            console.error('Erro ao esvaziar carrinho:', error);
+        }
+    }
+
     // Ouvinte para remover itens do carrinho (só ativa se estiver na página do carrinho)
     if (itensCarrinhoEl) {
         itensCarrinhoEl.addEventListener('click', (evento) => {
@@ -221,6 +240,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (evento.target.matches('button[data-id]')) {
                 const id = evento.target.getAttribute('data-id');
                 adicionarAoCarrinho(id);       
+            }
+        });
+    }
+
+    // --- Ouvinte para esvaziar carrinho ---
+    const btnEsvaziar = document.getElementById('esvaziar-carrinho');
+    if (btnEsvaziar) {
+        btnEsvaziar.addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja esvaziar o carrinho?')) {
+                esvaziarCarrinho();
             }
         });
     }

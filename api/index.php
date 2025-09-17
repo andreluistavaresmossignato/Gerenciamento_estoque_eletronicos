@@ -24,21 +24,21 @@ if (isset($_GET['reset']) && $_GET['reset'] == 1) {
 if (!isset($_SESSION['produtos'])) {
     $_SESSION['produtos'] = [
         1 => new Produto(1, "Mouse Logitech", "Logitech",89.99, "./api/images/produto01.png", 5),
-        2 => new Produto(2, "Teclado Microsoft", "Microsoft",104.88, "./api/images/produto02.png", 20),
-        3 => new Produto(3, "Monitor LG", "LG",899.90, "./api/images/produto03.png", 0),
+        2 => new Produto(2, "Teclado Microsoft", "Microsoft",104.88, "./api/images/produto02.png", 0),
+        3 => new Produto(3, "Monitor LG", "LG",899.90, "./api/images/produto03.png", 20),
         4 => new Produto(4, "Headset Razer", "Razer",299.99, "./api/images/produto04.png", 32),
         5 => new Produto(5, "Webcam Intelbras", "Intelbras",199.99, "./api/images/produto05.png", 25),
         6 => new Produto(6, "Notebook Lenovo", "Lenovo",2499.90, "./api/images/produto06.png", 18),
-        7 => new Produto(7, "Headset Havit", "Havit",194.90, "./api/images/produto07.png", 4),
-        8 => new Produto(8, "Mouse Redragon", "Redragon",299.90, "./api/images/produto08.png", 9),
+        7 => new Produto(7, "Headset Havit", "Havit",194.90, "./api/images/produto07.png", 36),
+        8 => new Produto(8, "Mouse Redragon", "Redragon",299.90, "./api/images/produto08.png", 30),
         9 => new Produto(9, "Playstation 4", "Sony",1249.90, "./api/images/produto09.png", 0),
-        10 => new Produto(10, "Monitor Samsung Odyssey", "Samsung",2000.90, "./api/images/produto10.png", 7),
+        10 => new Produto(10, "Monitor Samsung Odyssey", "Samsung",2000.90, "./api/images/produto10.png", 44),
         11 => new Produto(11, "Gabinete Aquário", "Pichau",419.90, "./api/images/produto11.png", 1),
         12 => new Produto(12, "WebCam Logitech", "Logitech",619.99, "./api/images/produto12.png", 99),
-        13 => new Produto(13, "Notebook Acer Nitro", "Acer",4319.90, "./api/images/produto13.png", 3),
+        13 => new Produto(13, "Notebook Acer Nitro", "Acer",4319.90, "./api/images/produto13.png", 15),
         14 => new Produto(14, "Microfone Fifine", "Fifine",289.99, "./api/images/produto14.png", 7),
-        15 => new Produto(15, "Celular Samgung A16 5G", "Samsung",1599.00, "./api/images/produto15.png", 10),
-        16 => new Produto(16, "Controle Xbox Series S Branco", "Microsoft",461.00, "./api/images/produto16.png", 2),
+        15 => new Produto(15, "Celular Samgung A16 5G", "Samsung",1599.00, "./api/images/produto15.png", 19),
+        16 => new Produto(16, "Controle Xbox Series S Branco", "Microsoft",461.00, "./api/images/produto16.png", 22),
     ];
 }
 $produtosDisponiveis = &$_SESSION['produtos']; // Referência, para alterar o original
@@ -97,6 +97,25 @@ switch ($action) {
         } else {
             echo json_encode(['success' => false, 'message' => 'Produto inválido.']);
         }
+        break;
+
+    case 'empty_cart':
+        $carrinho = $_SESSION['carrinho'];
+        $itens = $carrinho->getItens(); // Pega os itens com quantidade
+
+        // Devolve cada item ao estoque
+        foreach ($itens as $id => $item) {
+            if (isset($produtosDisponiveis[$id])) {
+                for ($i = 0; $i < $item['quantidade']; $i++) {
+                    $produtosDisponiveis[$id]->incrementarEstoque();
+                }
+            }
+        }
+
+        // Agora sim, esvazia o carrinho
+        $_SESSION['carrinho'] = new Carrinho();
+
+        echo json_encode(['success' => true, 'message' => 'Carrinho esvaziado e estoque restituído!']);
         break;
 
     default:

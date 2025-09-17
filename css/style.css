@@ -63,6 +63,36 @@
     border-color: #007bff;
 }
 
+/* Estilo para o input com ícone */
+.search-box .input-group {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.search-box .input-group-text {
+    background: white;
+    border: 1px solid #ddd;
+    border-right: none;
+}
+
+.search-box .form-control {
+    border: 1px solid #ddd;
+    border-left: none;
+}
+
+.search-box .form-control:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important; 
+    border-color: #007bff !important;
+    z-index: 3;
+}
+
+.search-box .input-group:focus-within .input-group-text {
+    border-color: #007bff !important;
+    background-color: #e7f3ff; 
+}
+
 /* Dropdown de estoque */
 .filter-dropdown {
     padding: 6px 12px;
