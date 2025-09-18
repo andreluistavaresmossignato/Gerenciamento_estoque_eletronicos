@@ -4,6 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const itensCarrinhoEl = document.getElementById('itens-carrinho');
     const totalCarrinhoEl = document.getElementById('total-carrinho');
 
+    // Estado atual dos filtros (mantido entre atualizações)
+    let filtroBuscaAtual = '';
+    let filtroEstoqueAtual = '';
+
     // --- EFEITO SHRINK NO HEADER AO ROLAR  ---
     window.addEventListener('scroll', () => {
         const header = document.getElementById('main-header');
@@ -185,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Atualiza o carrinho se estiver na página do carrinho
         if (itensCarrinhoEl) carregarCarrinho();
         // Atualiza lista de produtos (para refletir estoque)
-        if (listaProdutosEl) carregarProdutosFiltrados();
+        if (listaProdutosEl) carregarProdutosFiltrados(filtroBuscaAtual, filtroEstoqueAtual);
     }
 
     async function removerDoCarrinho(produtoId) {
@@ -199,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Resposta do servidor ao remover:', text);
         // Atualiza carrinho e produtos
         if (itensCarrinhoEl) carregarCarrinho();
-        if (listaProdutosEl) carregarProdutosFiltrados();
+        if (listaProdutosEl) carregarProdutosFiltrados(filtroBuscaAtual, filtroEstoqueAtual);
     }
 
     // --- ESVAZIAR CARRINHO ---
@@ -260,13 +264,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
-            carregarProdutosFiltrados(e.target.value, filterEstoque?.value || null);
+            filtroBuscaAtual = e.target.value;
+            carregarProdutosFiltrados(filtroBuscaAtual, filtroEstoqueAtual);
         });
     }
-
+    
     if (filterEstoque) {
         filterEstoque.addEventListener('change', (e) => {
-            carregarProdutosFiltrados(searchInput?.value || null, e.target.value);
+            filtroEstoqueAtual = e.target.value;
+            carregarProdutosFiltrados(filtroBuscaAtual, filtroEstoqueAtual);
         });
     }
 
