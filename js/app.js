@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const itensCarrinhoEl = document.getElementById('itens-carrinho');
     const totalCarrinhoEl = document.getElementById('total-carrinho');
 
+   
+    
     // Estado atual dos filtros (mantido entre atualizações)
     let filtroBuscaAtual = '';
     let filtroEstoqueAtual = '';
@@ -20,7 +22,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Função para buscar os produtos da nossa API PHP
+    // --- FUNÇÃO UTILITÁRIA PARA O TOAST ---
+function mostrarToastCarrinho(mensagem) {
+    const toastEl = document.getElementById('toastCarrinho');
+    if (!toastEl) return; // segurança: só funciona se o HTML tiver o toast
+
+    const toastBody = toastEl.querySelector('.toast-body');
+    toastBody.textContent = mensagem;
+
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+}
+
+    
+// Função para buscar os produtos da nossa API PHP
     async function carregarProdutos() {
         const response = await fetch('api/?action=get_products');
         const produtos = await response.json();
@@ -190,6 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (itensCarrinhoEl) carregarCarrinho();
         // Atualiza lista de produtos (para refletir estoque)
         if (listaProdutosEl) carregarProdutosFiltrados(filtroBuscaAtual, filtroEstoqueAtual);
+         mostrarToastCarrinho("Produto adicionado ao carrinho! 🛒");
     }
 
     async function removerDoCarrinho(produtoId) {
