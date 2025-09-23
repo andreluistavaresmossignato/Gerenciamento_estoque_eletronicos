@@ -30,7 +30,7 @@ if (!isset($_SESSION['produtos'])) {
         5 => new Produto(5, "Webcam Intelbras", "Intelbras",199.99, "./api/images/produto05.png", 25),
         6 => new Produto(6, "Notebook Lenovo", "Lenovo",2499.90, "./api/images/produto06.png", 18),
         7 => new Produto(7, "Headset Havit", "Havit",194.90, "./api/images/produto07.png", 36),
-        8 => new Produto(8, "Mouse Redragon", "Redragon",299.90, "./api/images/produto08.png", 30),
+        8 => new Produto(8, "Mouse Redragon", "Redragon",79.90, "./api/images/produto08.png", 30),
         9 => new Produto(9, "Playstation 4", "Sony",1249.90, "./api/images/produto09.png", 0),
         10 => new Produto(10, "Monitor Odyssey", "Samsung",2000.90, "./api/images/produto10.png", 44),
         11 => new Produto(11, "Gabinete Aquário", "Pichau",419.90, "./api/images/produto11.png", 1),

@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 const removerBtn = document.createElement('button');
                 removerBtn.classList.add('btn', 'btn-sm', 'btn-outline-danger');
-                removerBtn.textContent = 'Remover 1';
+                removerBtn.textContent = 'Remover';
                 removerBtn.setAttribute('data-id', item.produto.id);
                 
                 itemDiv.appendChild(itemP);
