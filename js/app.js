@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaProdutosEl = document.getElementById('lista-produtos');
     const itensCarrinhoEl = document.getElementById('itens-carrinho');
     const totalCarrinhoEl = document.getElementById('total-carrinho');
-
-   
     
     // Estado atual dos filtros (mantido entre atualizações)
     let filtroBuscaAtual = '';
@@ -23,19 +21,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- FUNÇÃO UTILITÁRIA PARA O TOAST ---
-function mostrarToastCarrinho(mensagem) {
-    const toastEl = document.getElementById('toastCarrinho');
-    if (!toastEl) return; // segurança: só funciona se o HTML tiver o toast
+    function mostrarToastCarrinho(mensagem) {
+        const toastEl = document.getElementById('toastCarrinho');
+        if (!toastEl) return; // segurança: só funciona se o HTML tiver o toast
 
-    const toastBody = toastEl.querySelector('.toast-body');
-    toastBody.textContent = mensagem;
+        const toastBody = toastEl.querySelector('.toast-body');
+        toastBody.textContent = mensagem;
 
-    const toast = new bootstrap.Toast(toastEl);
-    toast.show();
-}
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+    }
 
     
-// Função para buscar os produtos da nossa API PHP
+    // Função para buscar os produtos da nossa API PHP
     async function carregarProdutos() {
         const response = await fetch('api/?action=get_products');
         const produtos = await response.json();
@@ -116,6 +114,8 @@ function mostrarToastCarrinho(mensagem) {
                 listaProdutosEl.appendChild(produtoDiv);
             });
 
+            atualizarContadorCarrinho();
+
         } catch (error) {
             console.error('Erro ao carregar produtos:', error);
             if (listaProdutosEl) {
@@ -137,7 +137,7 @@ function mostrarToastCarrinho(mensagem) {
         itensCarrinhoEl.innerHTML = '';
 
         // Detecta se está usando a estrutura nova (itens) ou antiga (produtos)
-        let itens = carrinho.itens || []; // Nova estrutura
+        let itens = carrinho.itens || [];
         if (carrinho.produtos && !itens.length) {
             // Se não tem 'itens', tenta converter 'produtos' em 'itens' (compatibilidade)
             const mapa = {};
@@ -178,7 +178,43 @@ function mostrarToastCarrinho(mensagem) {
             });
         }
         
+        atualizarContadorCarrinho();
         totalCarrinhoEl.textContent = `R$ ${carrinho.total?.toFixed(2) || '0,00'}`;
+    }
+
+    // Função dedicada para atualizar o contador do carrinho
+    async function atualizarContadorCarrinho() {
+        const contadorEl = document.getElementById('contador-carrinho');
+        if (!contadorEl) return; // Sai se não encontrar o elemento
+
+        try {
+            const response = await fetch('api/?action=get_cart');
+            const carrinho = await response.json();
+
+            let totalItens = 0;
+
+            // Estrutura nova: 'itens' (recomendada)
+            if (carrinho.itens && Array.isArray(carrinho.itens)) {
+                totalItens = carrinho.itens.reduce((acc, item) => acc + item.quantidade, 0);
+            }
+            // Estrutura antiga: fallback para 'produtos'
+            else if (carrinho.produtos && Array.isArray(carrinho.produtos)) {
+                totalItens = carrinho.produtos.length;
+            }
+
+            // Atualiza visualmente
+            if (totalItens > 0) {
+                contadorEl.textContent = totalItens;
+                contadorEl.classList.remove('d-none'); // Garante que está visível
+            } else {
+                contadorEl.textContent = '';
+                contadorEl.classList.add('d-none'); // Esconde se zero
+            }
+
+        } catch (error) {
+            console.error('Erro ao atualizar contador:', error);
+            contadorEl.textContent = '';
+        }
     }
 
     async function adicionarAoCarrinho(produtoId) {
@@ -206,6 +242,7 @@ function mostrarToastCarrinho(mensagem) {
         // Atualiza lista de produtos (para refletir estoque)
         if (listaProdutosEl) carregarProdutosFiltrados(filtroBuscaAtual, filtroEstoqueAtual);
          mostrarToastCarrinho("Produto adicionado ao carrinho! 🛒");
+         atualizarContadorCarrinho();
     }
 
     async function removerDoCarrinho(produtoId) {
@@ -217,9 +254,11 @@ function mostrarToastCarrinho(mensagem) {
         });
         const text = await response.text();
         console.log('Resposta do servidor ao remover:', text);
+
         // Atualiza carrinho e produtos
         if (itensCarrinhoEl) carregarCarrinho();
         if (listaProdutosEl) carregarProdutosFiltrados(filtroBuscaAtual, filtroEstoqueAtual);
+        atualizarContadorCarrinho();
     }
 
     // --- ESVAZIAR CARRINHO ---
@@ -235,6 +274,7 @@ function mostrarToastCarrinho(mensagem) {
             // Atualiza interface
             if (itensCarrinhoEl) carregarCarrinho();
             if (listaProdutosEl) carregarProdutosFiltrados();
+            atualizarContadorCarrinho();
 
         } catch (error) {
             console.error('Erro ao esvaziar carrinho:', error);
