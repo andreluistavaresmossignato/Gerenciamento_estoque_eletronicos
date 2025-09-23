@@ -32,15 +32,15 @@ if (!isset($_SESSION['produtos'])) {
         7 => new Produto(7, "Headset Havit", "Havit",194.90, "./api/images/produto07.png", 36),
         8 => new Produto(8, "Mouse Redragon", "Redragon",299.90, "./api/images/produto08.png", 30),
         9 => new Produto(9, "Playstation 4", "Sony",1249.90, "./api/images/produto09.png", 0),
-        10 => new Produto(10, "Monitor Samsung Odyssey", "Samsung",2000.90, "./api/images/produto10.png", 44),
+        10 => new Produto(10, "Monitor Odyssey", "Samsung",2000.90, "./api/images/produto10.png", 44),
         11 => new Produto(11, "Gabinete Aquário", "Pichau",419.90, "./api/images/produto11.png", 1),
         12 => new Produto(12, "WebCam Logitech", "Logitech",619.99, "./api/images/produto12.png", 99),
-        13 => new Produto(13, "Notebook Acer Nitro", "Acer",4319.90, "./api/images/produto13.png", 15),
+        13 => new Produto(13, "Notebook Acer", "Acer",4319.90, "./api/images/produto13.png", 15),
         14 => new Produto(14, "Microfone Fifine", "Fifine",289.99, "./api/images/produto14.png", 7),
-        15 => new Produto(15, "Celular Galaxy A16 5G", "Samsung",1599.00, "./api/images/produto15.png", 19),
-        16 => new Produto(16, "Controle Xbox Branco", "Microsoft",461.00, "./api/images/produto16.png", 22),
-        17 => new Produto(17, "Smart Tv 50 polegadas", "Samsung",2375.50, "./api/images/produto17.png", 10),
-        18 => new Produto(18, "Teclado Mecânico Hyperx", "Hyperx",192.29, "./api/images/produto18.png", 56),
+        15 => new Produto(15, "Galaxy A16", "Samsung",1599.00, "./api/images/produto15.png", 19),
+        16 => new Produto(16, "Controle Xbox", "Microsoft",461.00, "./api/images/produto16.png", 22),
+        17 => new Produto(17, "Smart Tv 50''", "Samsung",2375.50, "./api/images/produto17.png", 10),
+        18 => new Produto(18, "Teclado Hyperx", "Hyperx",192.29, "./api/images/produto18.png", 56),
     ];
 }
 $produtosDisponiveis = &$_SESSION['produtos']; // Referência, para alterar o original
