@@ -20,7 +20,6 @@ if (isset($_GET['reset']) && $_GET['reset'] == 1) {
 }
 
 // --- Simulação do nosso banco de dados de produtos ---
-// --- Simulação do nosso banco de dados de produtos (persistente na sessão) ---
 if (!isset($_SESSION['produtos'])) {
     $_SESSION['produtos'] = [
         1 => new Produto(1, "Mouse Logitech", "Logitech",89.99, "./api/images/produto01.png", 5),
